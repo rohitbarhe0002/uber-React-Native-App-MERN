@@ -14,10 +14,11 @@ export const createOrder = async (req, res, next) => {
 
 // get all orders
 export const  getAllOrders  = async (req, res, next) => {
+
   try {
-    
     const order = await orders.find({}, { _id: 0 }).lean()
-    res.status(200).json(order);
+    res.status(200).json(order); 
+    console.log(order,"order")
   } catch (err) {
     console.log("coem in err")
     next(err);

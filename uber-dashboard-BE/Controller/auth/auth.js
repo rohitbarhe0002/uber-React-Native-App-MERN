@@ -7,7 +7,7 @@ dotenv.config()
 
 /// register user
 export const signUp = async (req, res, next) => {
-  const { username,email,address,password,userType,city,phoneNumber } = req.body;
+  const { username,email ,  address,password,userType,city,phoneNumber } = req.body;
   try {
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(password, salt);
@@ -27,8 +27,9 @@ export const signUp = async (req, res, next) => {
   }
 };
 
-/// login user
+/// login user 
 export const  signIn = async (req, res, next) => {
+  console.log("checkToken",req)
   try {
     const user = await User.findOne({ username: req.body.username });
     // RestaurentMenu.find({}, { _id: 0 }).lean()
@@ -43,11 +44,12 @@ export const  signIn = async (req, res, next) => {
    }
     const token = jwt.sign(
       { id: user._id, isAdmin: user.isAdmin },process.env.JWT,
-      {expiresIn: '5s'}
     );
     const { password, isAdmin, ...otherdetails } = user._doc;
     res.cookie("access_token",token,{
       httpOnly:true,
+      expiresIn: "10h"
+     
     }).status(200).json({...otherdetails,token});
   } catch (err) {
       res.status(500).json(err);

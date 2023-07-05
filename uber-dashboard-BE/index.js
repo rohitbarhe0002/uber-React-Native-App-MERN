@@ -8,7 +8,7 @@ import userRoute from './routes/user/user.js';
 import authRoute from './routes/auth/auth.js';
 import restaurentRoute from './routes/restaurentsMenu/restaurentsMenu.js'
 import ordersRoute from './routes/orders/orders.js'
-
+import { verifyUser } from "./verifyAuth/verifyToken.js";
 const app = express();
 const PORT = 8000;
 
@@ -30,11 +30,14 @@ mongoose.connect(process.env.MONGODB_URL,{
 }).catch((e)=>{
     console.log("no connection with db");
 })
+const router = express.Router();
+
 //midddleware
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors())
 
+router.use(verifyUser);
 
 app.use("/api/users",userRoute)
 app.use("/api/auth",authRoute)

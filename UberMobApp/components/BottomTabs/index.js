@@ -1,22 +1,28 @@
 import * as React from 'react';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {View, Text, Platform} from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { View, Text, Platform } from 'react-native';
+import { useNavigation } from '@react-navigation/native'; // Import the useNavigation hook
 import RestaurentMenu from '../../screens/RestaurentMenu';
 import OrderHistory from '../../screens/OrderHistory';
 import Orders from '../../screens/Orders';
 import Profile from '../../screens/Profile';
+import AntIcon from 'react-native-vector-icons/AntDesign';
+
 const Tab = createBottomTabNavigator();
 
 export default function BottomTabs() {
+  const navigation = useNavigation(); // Use the useNavigation hook
+
   return (
     <Tab.Navigator
       initialRouteName="Home"
       screenOptions={{
+        tabBarShowLabel: false,
         tabBarActiveTintColor: 'red',
         tabBarInactiveTintColor: 'blue',
         headerShown: false,
         tabBarStyle: {
-        //   backgroundColor: Color(theme).primaryThemeColor,
+          // backgroundColor: Color(theme).primaryThemeColor,
           borderTopWidth: 0,
           borderTopColor: 'transparent',
           height: Platform.OS === 'android' ? '9%' : '10%',
@@ -31,19 +37,14 @@ export default function BottomTabs() {
         name="Home"
         options={{
           unmountOnBlur: true,
-        //   tabBarIcon: ({color}) => (
-        //     <SvgXml
-        //       style={{marginTop: Platform.OS === 'ios' ? 10 : 25}}
-        //       height={24}
-        //       width={24}
-        //       xml={icon.homeIcon()}
-        //     />
-        //   ),
-          tabBarLabel: ({focused}) =>
+          tabBarIcon: ({ color }) => (
+            <AntIcon name="home" color={'#5446A7'} size={20} />
+          ),
+          tabBarLabel: ({ focused }) =>
             focused ? (
               <Text
                 style={{
-                  color: 'red',
+                  color: '#5446A7',
                   fontSize: 10,
                   fontFamily: 'Urbanist',
                   marginBottom: 10,
@@ -68,134 +69,75 @@ export default function BottomTabs() {
         name="Restaurent Menu"
         options={{
           unmountOnBlur: true,
-        //   tabBarIcon: ({color}) => (
-        //     <SvgXml
-        //       style={{marginTop: Platform.OS === 'ios' ? 10 : 25}}
-        //       height={24}
-        //       width={24}
-        //       xml={icon.userIcon()}
-        //     />
-        //   ),
-          tabBarLabel: ({focused}) =>
-            focused ? (
-              <Text
-                style={{
-                //   color: Color(theme).bottomTabColor,
-                  fontSize: 10,
-                  fontFamily: 'Urbanist',
-                  marginBottom: 10,
-                }}>
-                Friends
-              </Text>
-            ) : (
-              <Text
-                style={{
-                //   color: Color(theme).white,
-                  fontSize: 10,
-                  fontFamily: 'Urbanist',
-                  marginBottom: 10,
-                }}>
-                Friends
-              </Text>
-            ),
+          tabBarIcon: ({ color }) => (
+            <AntIcon name="inbox" color={'#5446A7'} size={20} />
+          ),
+          tabBarLabel: ({ focused }) => (
+            <Text
+              style={{
+                // color: Color(theme).bottomTabColor,
+                fontSize: 10,
+                fontFamily: 'Urbanist',
+                marginBottom: 10,
+              }}>
+              Menu
+            </Text>
+          ),
         }}
         component={RestaurentMenu}
       />
       <Tab.Screen
-        name="ProfileOutline"
+        name="menu"
         options={{
-          tabBarLabel: 'Profile',
           unmountOnBlur: true,
-          tabBarLabel: ({focused}) =>
-          focused ? (
-            <Text
-              style={{
-              //   color: Color(theme).bottomTabColor,
-                fontSize: 10,
-                fontFamily: 'Urbanist',
-                marginBottom: 10,
-              }}>
-              Profile
-            </Text>
-          ) : (
-            <Text
-              style={{
-              //   color: Color(theme).white,
-                fontSize: 10,
-                fontFamily: 'Urbanist',
-                marginBottom: 10,
-              }}>
-              Home
-            </Text>
+          tabBarIcon: ({ color }) => (
+            <AntIcon name="menufold" color="#5446A7" size={20} />
           ),
-          tabBarIcon: ({}) => (
-            <View
+          tabBarLabel: ({ focused }) => (
+            <Text
               style={{
-                position: 'absolute',
-                bottom: 10, // space from bottombar
-                height: 68,
-                width: 68,
-                borderRadius: 68,
-                justifyContent: 'center',
-                alignItems: 'center',
-                // backgroundColor: theme ? '#6F38C5' : '#FE7E07',
+                // color: Color(theme).bottomTabColor,
+                fontSize: 10,
+                fontFamily: 'Urbanist',
+                marginBottom: 10,
               }}>
-              {/* <Image
-                style={{
-                  bottom: 0, // space from bottombar
-                  height: 64,
-                  width: 64,
-                  borderRadius: 64,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                //   backgroundColor: Color(theme).primaryThemeColor,
-                }}
-                // source={{uri: userProfileImg}}
-              /> */}
-            </View>
+              History
+            </Text>
           ),
         }}
-        component={Profile}
+        component={OrderHistory}
       />
 
       <Tab.Screen
         name="OrderHistory"
         options={{
           unmountOnBlur: true,
-        //   tabBarIcon: ({color}) => (
-        //     <SvgXml
-        //       style={{marginTop: Platform.OS === 'ios' ? 10 : 25}}
-        //       height={24}
-        //       width={24}
-        //       xml={icon.trophyIcon()}
-        //     />
-        //   ),
-          tabBarLabel: ({focused}) =>
-            focused ? (
-              <Text
-                style={{
-                //   color: Color(theme).bottomTabColor,
-                  fontSize: 10,
-                  fontFamily: 'Urbanist',
-                  marginBottom: 10,
-                }}>
-                Contest
-              </Text>
-            ) : (
-              <Text
-                style={{
-                //   color: Color(theme).white,
-                  fontSize: 10,
-                  fontFamily: 'Urbanist',
-                  marginBottom: 10,
-                }}>
-                Contest
-              </Text>
-            ),
+          tabBarIcon: ({ color }) => (
+            <AntIcon name="user" color="#5446A7" size={20} />
+          ),
+          tabBarLabel: ({ focused }) => (
+            <Text
+              style={{
+                // color: Color(theme).bottomTabColor,
+                fontSize: 10,
+                fontFamily: 'Urbanist',
+                marginBottom: 10,
+              }}>
+              Profile
+            </Text>
+          ),
         }}
-        component={OrderHistory}
+        component={Profile}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            // Prevent default tabPress behavior
+            e.preventDefault();
+
+            // Navigate to the "Profile" screen with the back button
+            navigation.navigate('OrderHistory', { screen: 'OrderHistory' });
+          },
+        })}
       />
-    
     </Tab.Navigator>
   );
 }
