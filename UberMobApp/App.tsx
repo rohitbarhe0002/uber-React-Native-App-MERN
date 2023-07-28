@@ -11,13 +11,18 @@ import { TextInput, ActivityIndicator } from 'react-native';
 import SignIn from './screens/Signin/index';
 import SignUp from './screens/SignUp/index';
 import BottomTabs from './components/BottomTabs';
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 type SectionProps = PropsWithChildren<{
   title: string;
 }>;
 
 function App(): JSX.Element {
   const Stack = createStackNavigator();
-
+  const { userOrders } = useSelector((state:any) => state.userSlice);
+  console.log( userOrders,"===========>testing");
+  const dispatch = useDispatch();
   return (
     <>
     <NavigationContainer

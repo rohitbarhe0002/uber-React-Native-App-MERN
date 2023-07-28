@@ -55,7 +55,6 @@ export const OrdersApi = {
             method: "GET",
             signal,
           });
-          console.log(response,"responce");
          return response.data;
         } catch (error) {
           if (cancel && error.name !== 'AbortError') {
@@ -84,30 +83,52 @@ export const OrdersApi = {
         }
       },
 
-//   get: async function (id, cancel = false) {
-//     const abortController = new AbortController();
-//     const signal = cancel ? abortController.signal : undefined;
+     
+      createOrder : async function (userData, cancel = false) {
+        const abortController = new AbortController();
+        const signal = cancel ? abortController.signal : undefined;
+        try {
+      const response =  await api.request({
+            url:'/orders/orders',
+            method: "POST",
+            data:userData,
+            signal,
+          });
+         return response.data;
+        } catch (error) {
+          if (cancel && error.name !== 'AbortError') {
+            abortController.abort();
+          }
+          throw error;
+        }
+      },
+      
 
-//     try {
-//       const response = await api.request({
-//         url: `/products/:id`,
-//         method: "GET",
-//         signal,
-//       });
 
-//       return response.data.product;
-//     } catch (error) {
-//       if (error.name === 'AbortError') {
-//         // Request was aborted
-//         return null;
-//       }
-//       throw error;
-//     } finally {
-//       if (cancel) {
-//         abortController.abort();
-//       }
-//     }
-//   },
+  getById: async function (id, cancel = false) {
+    const abortController = new AbortController();
+    const signal = cancel ? abortController.signal : undefined;
+    console.log(id,"fromid ")
+
+    try {
+      const response = await api.request({
+        url: `orders/${id}`,
+        method: "GET",
+        signal,
+      });
+      return response.data;
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        // Request was aborted
+        return null;
+      }
+      throw error;
+    } finally {
+      if (cancel) {
+        abortController.abort();
+      }
+    }
+  },
 //   getAll: async function (cancel = false) {
 //     const abortController = new AbortController();
 //     const signal = cancel ? abortController.signal : undefined;

@@ -80,14 +80,23 @@ export const deleteRestaurentMenu = async (req, res, next) => {
 };
 
 //search by char 
-export const  searchBychar = async (req, res) => {
- const  char =  req.body.name;
+export const searchBychar = async (req, res) => {
+  console.log("come in controller");
+  const searchChar = req.query.searchChar || '';
+  console.log(searchChar, "search char");
   try {
+    const restaurantsByChar = await RestaurentMenu.find({
+      name: { $regex: `^${searchChar}`, $options: 'i' },
+    });
 
-    const resstaurentsBychar = await RestaurentMenu.findOne({ name: { $regex: `^${char}` ,$options:"$i"} });
-    res.send(resstaurentsBychar)
-    console.log("comme in");
+    if (restaurantsByChar.length > 0) {
+      res.send(restaurantsByChar);
+    } else {
+      res.send({ message: "no restaurants are present" });
+    }
+
+    console.log("come in");
   } catch (e) {
-    res.status(400).send(e)
+    console.log(e, "error is here");
   }
-}
+};

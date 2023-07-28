@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect,useState } from 'react';
 import { View, Text, StyleSheet, ImageBackground,Image, TextInput, Pressable } from 'react-native';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 const Profile = () => {
-
-  useEffect(()=>{
+const [isEditable,setIsEditable] = useState(false)
+useEffect(()=>{
 GoogleSignin.configure({
   webClientId:'332417656605-ljlvd4oqiqmblllupsifqidf6eplkfq8.apps.googleusercontent.com',
   offlineAccess:true,
@@ -51,7 +51,7 @@ source={{uri:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPIAAADQCAMAAAAK0syr
           //  onChangeText={handleChange('email')}
           //  onBlur={handleBlur('email')}
            value={'rohitbarche0002'}
-           editable={false}
+           editable={isEditable}
            style={styles.inputFiled}
          />
 <Text style={styles.inputFiledLabel}>Email:</Text>
@@ -59,7 +59,7 @@ source={{uri:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPIAAADQCAMAAAAK0syr
           //  onChangeText={handleChange('email')}
           //  onBlur={handleBlur('email')}
            value={'rohitbarche99@gmail.com'}
-           editable={false}
+           editable={isEditable}
            style={styles.inputFiled}
          />
          <Text style={styles.inputFiledLabel}>City:</Text>
@@ -67,14 +67,14 @@ source={{uri:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPIAAADQCAMAAAAK0syr
           //  onChangeText={handleChange('email')}
           //  onBlur={handleBlur('email')}
            value={'Indore'}
-           editable={false}
+           editable={isEditable}
            style={styles.inputFiled}
          />
      </View>
 <View style={{ flex: 1, alignItems: 'flex-end', paddingRight: 20,alignContent:'center', }}>          
-  <Text style={{ width: 35,height:35, backgroundColor:'#5446A7',borderRadius:50,paddingTop:7,paddingLeft:6}}>
+  <Pressable onPress={()=>setIsEditable(!isEditable)} style={{ width: 35,height:35, backgroundColor:'#5446A7',borderRadius:50,paddingTop:7,paddingLeft:6}}>
   <AntIcon name="edit" color="#fff" size={20} />
-  </Text>
+  </Pressable>
   {/* <Pressable onPress={()=>signIn()}>
 <Text style={{backgroundColor:'red'}}>sign in</Text>
 </Pressable> */}

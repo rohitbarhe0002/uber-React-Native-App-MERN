@@ -32,6 +32,7 @@ export default function BottomTabs() {
           alignSelf: 'center',
           position: 'absolute',
         },
+        tabBarHideOnKeyboard:true
       }}>
       <Tab.Screen
         name="Home"

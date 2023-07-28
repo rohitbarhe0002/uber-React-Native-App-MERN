@@ -3,10 +3,12 @@ import { createMenuItem ,deleteRestaurentMenu,getAllRestaurentMenu,getRestaurent
 const router = express.Router();
 
 router.get("/",getAllRestaurentMenu)
+router.get("/searchByChar",searchBychar)
 router.get("/:id",getRestaurentMenuById)
+
 router.delete("/:id",deleteRestaurentMenu)
 router.put("/:id",updateRestaurant)
-router.get("/:id",searchBychar)
+
 
 router.post("/restuarentMenu",createMenuItem)
 

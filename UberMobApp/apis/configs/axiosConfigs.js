@@ -2,7 +2,7 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: 'http://192.168.2.117:8000/api',
+  baseURL: 'http://192.168.2.123:8000/api',
   headers: {'Authorization': 'Bearer '+ 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0OWRiNjIzN2Q5ZTY5ZmQwNThhNWY2NiIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2ODg1NTkwNTd9.W_BZoV6dV6dRwbxXpi4v8wREF_5CAa8Mp9DnliWRLcM'},
  },
 

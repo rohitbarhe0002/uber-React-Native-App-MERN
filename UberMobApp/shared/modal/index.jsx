@@ -1,97 +1,204 @@
-import React, {useState} from 'react';
-import {Alert, Modal, StyleSheet, Text, Pressable, View,Button, TextInput,} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  Alert,
+  Modal,
+  StyleSheet,
+  Text,
+  Pressable,
+  View,
+  Button,
+  TextInput,
+} from 'react-native';
+
+
+//@ts-ignore
 import AntIcon from "react-native-vector-icons/AntDesign";
+import {RadioButton} from 'react-native-paper';
+import {Formik} from 'formik';
+import {OrdersApi} from '../../apis/orderApis/orderApi';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+const ModalView = ({isOpen, setIsOpen, itemId, handleOnSubmit}) => {
+  const formikRef = React.useRef(null);
+  const [checked, setChecked] = React.useState('Accepted');
+  console.log(itemId, '>>>>id is here');
+  useEffect(() => {
+    // console.log(itemId,"itm id")
+    let filterdData;
+    if (isOpen && itemId) {
+      console.log(itemId, 'itemId');
+      OrdersApi.getById(itemId).then(order => {
+        console.log(order.price);
+        formikRef.current.setValues({
+          price: order.price.toString(),
+          deliveryAddress: order.deliveryAddress,
+        });
+        setChecked(order?.status);
+      });
 
-import { RadioButton } from 'react-native-paper';
-import { Formik } from 'formik';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-const ModalView = () => {
+      return () => {
+        formikRef?.current?.resetForm(); // Reset the Formik form to initial values
+        setChecked('Accepted'); // Reset the radio button to default value
+      };
+      // Set initial field values when the modal opens using Formik's setValues
+      // Set the default value for the radio button
+    }
+  }, [isOpen]);
 
-  const [modalVisible, setModalVisible] = useState(false);
-  const [checked, setChecked] = React.useState('Approved');
   return (
     <View style={styles.centeredView}>
       <Modal
         animationType="slide"
         transparent={true}
-        visible={modalVisible}
+        visible={isOpen}
         onRequestClose={() => {
           Alert.alert('Modal has been closed.');
-          setModalVisible(!modalVisible);
+          setIsOpen(!isOpen);
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-         <Text onPress={()=>setModalVisible(!modalVisible)} style={{display:'flex',justifyContent:'flex-end',alignItems:'flex-end',left:'50%',paddingBottom:0,fontWeight:'bold',backgroundColor:'red'}}
-        
-         >
-         <AntIcon name="close" color="#000" size={18} />
-         </Text>
-          <Formik
-     initialValues={{ email: '' }}
-     onSubmit={values => console.log(values)}
-   >
-    
-     {({ handleChange, handleBlur, handleSubmit, values }) => (
-       <View style={{width:'100%'}}>
-           <Text style={{ marginBottom: 5,marginLeft:5,color:'#000',fontSize:14 }}>Name</Text>
-           <TextInput
-           onChangeText={handleChange('email')}
-           onBlur={handleBlur('email')}
-           value={values.email}
-           style={{borderColor:'#ccc',borderWidth:1,marginBottom: 15,borderRadius:15}}
-         />
-           <Text style={{ marginBottom: 5,marginLeft:5,color:'#000',fontSize:14 }}>Delivery Address</Text>
-           <TextInput
-           onChangeText={handleChange('email')}
-           onBlur={handleBlur('email')}
-           value={values.email}
-           style={{borderColor:'#ccc',borderWidth:1,marginBottom: 15,borderRadius:15}}
-           label="Email"
-         />
-           <Text style={{ marginBottom: 5,marginLeft:5,color:'#000',fontSize:14 }}>Price</Text>
-           <TextInput
-           onChangeText={handleChange('email')}
-           onBlur={handleBlur('email')}
-           value={values.email}
-           style={{borderColor:'#ccc',borderWidth:1,marginBottom: 15,borderRadius:15}}
-           label="Email"
-         />
-       <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-  <RadioButton
-    value="first"
-    status={checked === 'Approved' ? 'checked' : 'unchecked'}
-    onPress={() => setChecked('Approved')}
-  />
-  <Text style={{ width: 40 }}>Approved</Text>
-
-  <RadioButton
-    value="second"
-    status={checked === 'Pending' ? 'checked' : 'unchecked'}
-    onPress={() => setChecked('Pending')}
-  />
-  <Text style={{ width: 40 }}>Pending</Text>
-  <RadioButton
-    value="second"
-    status={checked === 'Declined' ? 'checked' : 'unchecked'}
-    onPress={() => setChecked('Declined')}
-  />
-  <Text style={{ width: 40 }}>Declined</Text>
-</View>
-
-     <View style={{borderRadius:10,display:'flex',justifyContent:'center',alignItems:'center'}}>
-     <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => handleSubmit()}>
-              <Text style={styles.textStyle}>Submit</Text>
+            <Pressable
+              onPress={() => setIsOpen(!isOpen)}
+              style={{
+                alignSelf: 'flex-end', // Align the Pressable component to the right
+              }}>
+              <Text
+                style={{
+                  width: 30,
+                  height: 30,
+                  backgroundColor: '#5446A7',
+                  borderRadius: 30,
+                  paddingTop: 7,
+                  paddingLeft: 7,
+                  justifyContent: 'flex-end',
+                  display: 'flex',
+                  alignContent: 'flex-end',
+                  fontWeight: '600',
+                }}>
+                <AntIcon name="close" color="#fff" size={15} />
+              </Text>
             </Pressable>
-         </View>
-       </View>
-     )}
-   </Formik>  
+            <Formik
+              initialValues={{name: '', deliveryAddress: '', price: ''}}
+              innerRef={formikRef}
+              onSubmit={values => {
+                let userInfo = {
+                  orderID: Math.random(99999999) + 1,
+                  deliveryAddress: values.deliveryAddress,
+                  price: values.price,
+                  status: checked,
+                };
+                handleOnSubmit(userInfo);
+              }}>
+              {({handleChange, handleBlur, handleSubmit, values}) => (
+                <View style={{width: '100%'}}>
+                  <Text
+                    style={{
+                      marginBottom: 5,
+                      marginLeft: 5,
+                      color: '#000',
+                      fontSize: 14,
+                    }}>
+                    Name
+                  </Text>
+                  <TextInput
+                    onChangeText={handleChange('name')}
+                    onBlur={handleBlur('name')}
+                    value={values.name}
+                    style={{
+                      borderColor: '#ccc',
+                      borderWidth: 1,
+                      marginBottom: 15,
+                      borderRadius: 15,
+                    }}
+                  />
+                  <Text
+                    style={{
+                      marginBottom: 5,
+                      marginLeft: 5,
+                      color: '#000',
+                      fontSize: 14,
+                    }}>
+                    Delivery Address
+                  </Text>
+                  <TextInput
+                    onChangeText={handleChange('deliveryAddress')}
+                    onBlur={handleBlur('deliveryAddress')}
+                    value={values.deliveryAddress}
+                    style={{
+                      borderColor: '#ccc',
+                      borderWidth: 1,
+                      marginBottom: 15,
+                      borderRadius: 15,
+                    }}
+                    label="deliveryAddress"
+                  />
+                  <Text
+                    style={{
+                      marginBottom: 5,
+                      marginLeft: 5,
+                      color: '#000',
+                      fontSize: 14,
+                    }}>
+                    Price
+                  </Text>
+                  <TextInput
+                    onChangeText={handleChange('price')}
+                    onBlur={handleBlur('price')}
+                    value={values.price}
+                    style={{
+                      borderColor: '#ccc',
+                      borderWidth: 1,
+                      marginBottom: 15,
+                      borderRadius: 15,
+                    }}
+                    label="price"
+                  />
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-around',
+                      alignItems: 'center',
+                    }}>
+                    <RadioButton
+                      value="first"
+                      status={checked === 'Accepted' ? 'checked' : 'unchecked'}
+                      onPress={() => setChecked('Accepted')}
+                    />
+                    <Text style={{width: 40}}>Accepted</Text>
+
+                    <RadioButton
+                      value="second"
+                      status={checked === 'Pending' ? 'checked' : 'unchecked'}
+                      onPress={() => setChecked('Pending')}
+                    />
+                    <Text style={{width: 40}}>Pending</Text>
+                    <RadioButton
+                      value="second"
+                      status={checked === 'Declined' ? 'checked' : 'unchecked'}
+                      onPress={() => setChecked('Declined')}
+                    />
+                    <Text style={{width: 40}}>Declined</Text>
+                  </View>
+
+                  <View
+                    style={{
+                      borderRadius: 10,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Pressable
+                      style={[styles.button, styles.buttonClose]}
+                      onPress={() => handleSubmit()}>
+                      <Text style={styles.textStyle}>Submit</Text>
+                    </Pressable>
+                  </View>
+                </View>
+              )}
+            </Formik>
           </View>
         </View>
       </Modal>
-  
     </View>
   );
 };
@@ -103,18 +210,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 20,
     width: '100%',
-    boxsizing:'border-box',
-
+    boxsizing: 'border-box',
   },
   modalView: {
-    width:'80%',
+    width: '80%',
     backgroundColor: 'white',
     borderRadius: 20,
     padding: 30,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
-    boxsizing:'borderox',
+    boxsizing: 'borderox',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -124,10 +230,8 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   button: {
-  padding:8,
-    width:150,
-   
-   
+    padding: 8,
+    width: 150,
   },
   buttonOpen: {
     backgroundColor: '#F194FF',
@@ -135,20 +239,25 @@ const styles = StyleSheet.create({
   buttonClose: {
     backgroundColor: '#5446A7',
     color: '#2196F3',
-    
+
     borderRadius: 50,
     marginTop: 10,
-    display:'flex',
+    display: 'flex',
   },
   textStyle: {
     color: '#fff',
     fontWeight: 'normal',
     textAlign: 'center',
-    fontSize:16
+    fontSize: 16,
   },
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
+  },
+
+  buttonText: {
+    color: '#fff',
+    marginLeft: 5,
   },
 });
 
