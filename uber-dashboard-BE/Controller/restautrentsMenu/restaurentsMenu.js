@@ -3,7 +3,6 @@ import RestaurentMenu from "../../Schema/RestaurentsMenu/restaurentMenu.js";
 
 ///Add new menu item
 export const createMenuItem = async (req, res, next) => {
-  console.log(req.body)
   const newMenuItem = new RestaurentMenu(req.body);
   try {
     const saveMEnuItem = await newMenuItem.save();
@@ -16,7 +15,6 @@ export const createMenuItem = async (req, res, next) => {
 // ///update restaturent
 
 export const updateRestaurant = async (req, res, next) => {
-  console.log(req.params.id);
   const filter = { id: req.params.id };
   const update = req.body;
   
@@ -25,7 +23,6 @@ export const updateRestaurant = async (req, res, next) => {
       returnOriginal: false,
       projection: { _id: 0 },
    });
-   console.log(updatedRestaurant,"updatedRestaurant")
     res.status(200).json(updatedRestaurant);
   } catch (err) {
     console.log(err);
@@ -81,9 +78,7 @@ export const deleteRestaurentMenu = async (req, res, next) => {
 
 //search by char 
 export const searchBychar = async (req, res) => {
-  console.log("come in controller");
   const searchChar = req.query.searchChar || '';
-  console.log(searchChar, "search char");
   try {
     const restaurantsByChar = await RestaurentMenu.find({
       name: { $regex: `^${searchChar}`, $options: 'i' },
@@ -94,8 +89,6 @@ export const searchBychar = async (req, res) => {
     } else {
       res.send({ message: "no restaurants are present" });
     }
-
-    console.log("come in");
   } catch (e) {
     console.log(e, "error is here");
   }

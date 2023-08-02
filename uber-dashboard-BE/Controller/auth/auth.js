@@ -28,30 +28,28 @@ export const signUp = async (req, res, next) => {
 };
 
 /// login user 
-export const  signIn = async (req, res, next) => {
-  console.log("checkToken",req)
+export const signIn = async (req, res, next) => {
   try {
     const user = await User.findOne({ username: req.body.username });
-    // RestaurentMenu.find({}, { _id: 0 }).lean()
-    // if (!user) return next(createError(404, "user not found !"));
     const isPasswordChecked = await bcrypt.compare(
       req.body.password,
       user.password
     );
-    if (!isPasswordChecked)
-   {
-     res.status(404).json({errorMessage:"password is not matched"});
-   }
+    if (!isPasswordChecked) {
+      return res.status(404).json({ errorMessage: "password is not matched" });
+    }
     const token = jwt.sign(
-      { id: user._id, isAdmin: user.isAdmin },process.env.JWT,
+      { id: user._id, isAdmin: user.isAdmin },
+      process.env.JWT
     );
     const { password, isAdmin, ...otherdetails } = user._doc;
-    res.cookie("access_token",token,{
-      httpOnly:true,
+
+    // Set the cookie and send the response in one go
+    res.cookie("access_token", token, {
+      httpOnly: true,
       expiresIn: "10h"
-     
-    }).status(200).json({...otherdetails,token});
+    }).status(200).json({ ...otherdetails, token });
   } catch (err) {
-      res.status(500).json(err);
+    res.status(500).json(err);
   }
 };

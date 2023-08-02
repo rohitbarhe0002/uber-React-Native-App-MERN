@@ -2,38 +2,29 @@ import React, { useEffect,useState } from 'react';
 import { View, Text, StyleSheet, ImageBackground,Image, TextInput, Pressable } from 'react-native';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
-const Profile = () => {
+import { useSelector } from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+const Profile = ({navigation}) => {
+  const [userInfo,setUserInfo] = useState({username:'',address:'',city:''})
 const [isEditable,setIsEditable] = useState(false)
-useEffect(()=>{
-GoogleSignin.configure({
-  webClientId:'332417656605-ljlvd4oqiqmblllupsifqidf6eplkfq8.apps.googleusercontent.com',
-  offlineAccess:true,
-})
-  },[])
-  signIn = async () => {
-    console.log("come in sign in")
-    try {
-      await GoogleSignin.hasPlayServices()
-      const userInfo = await GoogleSignin.signIn();
-    console.log(userInfo,">>>>userInfo")
-    } catch (error) {
-      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        // user cancelled the login flow
-        console.log("from first")
-      } else if (error.code === statusCodes.IN_PROGRESS) {
-        // operation (e.g. sign in) is in progress already
-        console.log("from second")
-      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        // play services not available or outdated
-        console.log(error.code)
+const {userCredential, loading, openErrorModal,error} = useSelector(state => state.userAuthSlice);
 
-      } else {
-        // some other error happened
-        console.log(error)
 
-      }
-    }
-  };
+useEffect(() => {
+  if (userCredential) {
+    setUserInfo((prevUserInfo) => ({
+      ...prevUserInfo,
+      username: userCredential.username,
+      address: userCredential.address,
+      city: userCredential.city,
+    }));
+  }
+}, []);
+
+const handleSignOut= () => {
+  AsyncStorage.removeItem('userToken')
+navigation.navigate('SignIn')
+}
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -48,38 +39,43 @@ source={{uri:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPIAAADQCAMAAAAK0syr
 <View style={styles.detailsContainer}>
 <Text style={styles.inputFiledLabel}>Username:</Text>
            <TextInput
-          //  onChangeText={handleChange('email')}
-          //  onBlur={handleBlur('email')}
-           value={'rohitbarche0002'}
+           onChangeText={(text)=>setUserInfo({...userInfo,username:text})}
+           value={userInfo?.username}
            editable={isEditable}
            style={styles.inputFiled}
          />
-<Text style={styles.inputFiledLabel}>Email:</Text>
-           <TextInput
-          //  onChangeText={handleChange('email')}
-          //  onBlur={handleBlur('email')}
-           value={'rohitbarche99@gmail.com'}
+    <Text style={styles.inputFiledLabel}>Email:</Text>
+          <TextInput
+           onChangeText={(text)=>setUserInfo({...userInfo,address:text})}
+           value={userInfo?.address}
            editable={isEditable}
            style={styles.inputFiled}
          />
+
          <Text style={styles.inputFiledLabel}>City:</Text>
            <TextInput
-          //  onChangeText={handleChange('email')}
-          //  onBlur={handleBlur('email')}
-           value={'Indore'}
+           onChangeText={(text)=>setUserInfo({...userInfo,city:text})}
+           value={userInfo?.city}
            editable={isEditable}
            style={styles.inputFiled}
          />
+
      </View>
+     <View>
 <View style={{ flex: 1, alignItems: 'flex-end', paddingRight: 20,alignContent:'center', }}>          
   <Pressable onPress={()=>setIsEditable(!isEditable)} style={{ width: 35,height:35, backgroundColor:'#5446A7',borderRadius:50,paddingTop:7,paddingLeft:6}}>
   <AntIcon name="edit" color="#fff" size={20} />
   </Pressable>
-  {/* <Pressable onPress={()=>signIn()}>
-<Text style={{backgroundColor:'red'}}>sign in</Text>
-</Pressable> */}
+
 </View>
 
+<View style={{ flex: 1, alignItems: 'flex-end', paddingRight: 20,alignContent:'flex-end', top:50}}>          
+  <Pressable onPress={()=>handleSignOut()} style={{ width: 35,height:35, backgroundColor:'#5446A7',borderRadius:50,paddingTop:7,paddingLeft:7}}>
+  <AntIcon name="logout" color="#fff" size={20} />
+  </Pressable>
+
+</View>
+</View>
 
     </View>
   );

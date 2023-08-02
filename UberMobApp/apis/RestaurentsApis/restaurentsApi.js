@@ -70,7 +70,6 @@ export const RestaurentsApi = {
             method: "DELETE",
             signal,
           });
-          console.log(response);
          return response;
         } catch (error) {
           if (cancel && error.name !== 'AbortError') {
@@ -89,7 +88,6 @@ export const RestaurentsApi = {
             method: "GET",
             signal,
           });
-          console.log(response);
          return response;
         } catch (error) {
           if (cancel && error.name !== 'AbortError') {

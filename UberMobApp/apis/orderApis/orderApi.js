@@ -1,8 +1,7 @@
 import { api } from "../configs/axiosConfigs";
 
-
-
 export const OrdersApi = {
+ 
 
     // create: async function (product, cancel = false) {
     //     const abortController = new AbortController();
@@ -73,7 +72,7 @@ export const OrdersApi = {
             method: "DELETE",
             signal,
           });
-          console.log(response);
+       
          return response;
         } catch (error) {
           if (cancel && error.name !== 'AbortError') {
@@ -94,6 +93,7 @@ export const OrdersApi = {
             data:userData,
             signal,
           });
+     
          return response.data;
         } catch (error) {
           if (cancel && error.name !== 'AbortError') {
@@ -108,8 +108,6 @@ export const OrdersApi = {
   getById: async function (id, cancel = false) {
     const abortController = new AbortController();
     const signal = cancel ? abortController.signal : undefined;
-    console.log(id,"fromid ")
-
     try {
       const response = await api.request({
         url: `orders/${id}`,
@@ -120,6 +118,29 @@ export const OrdersApi = {
     } catch (error) {
       if (error.name === 'AbortError') {
         // Request was aborted
+        return null;
+      }
+      throw error;
+    } finally {
+      if (cancel) {
+        abortController.abort();
+      }
+    }
+  },
+
+  updateOrder: async function (id, cancel = false) {
+    const abortController = new AbortController();
+    const signal = cancel ? abortController.signal : undefined;
+
+    try {
+      const response = await api.request({
+        url: `orders/${id}`,
+        method: "GET",
+        signal,
+      });
+      return response.data;
+    } catch (error) {
+      if (error.name === 'AbortError') {
         return null;
       }
       throw error;

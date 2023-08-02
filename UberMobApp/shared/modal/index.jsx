@@ -17,17 +17,20 @@ import {RadioButton} from 'react-native-paper';
 import {Formik} from 'formik';
 import {OrdersApi} from '../../apis/orderApis/orderApi';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-const ModalView = ({isOpen, setIsOpen, itemId, handleOnSubmit}) => {
+import { toggleModal } from '../../redux/slices/modalSlice';
+import {useDispatch} from 'react-redux';
+import {useSelector} from 'react-redux';
+
+const ModalView = ({itemId, handleOnSubmit}) => {
+  const {isOpen} = useSelector(state => state.orderModalSlice);
   const formikRef = React.useRef(null);
   const [checked, setChecked] = React.useState('Accepted');
-  console.log(itemId, '>>>>id is here');
+  const dispatch  = useDispatch()
+
   useEffect(() => {
-    // console.log(itemId,"itm id")
     let filterdData;
     if (isOpen && itemId) {
-      console.log(itemId, 'itemId');
       OrdersApi.getById(itemId).then(order => {
-        console.log(order.price);
         formikRef.current.setValues({
           price: order.price.toString(),
           deliveryAddress: order.deliveryAddress,
@@ -39,8 +42,7 @@ const ModalView = ({isOpen, setIsOpen, itemId, handleOnSubmit}) => {
         formikRef?.current?.resetForm(); // Reset the Formik form to initial values
         setChecked('Accepted'); // Reset the radio button to default value
       };
-      // Set initial field values when the modal opens using Formik's setValues
-      // Set the default value for the radio button
+    
     }
   }, [isOpen]);
 
@@ -52,12 +54,12 @@ const ModalView = ({isOpen, setIsOpen, itemId, handleOnSubmit}) => {
         visible={isOpen}
         onRequestClose={() => {
           Alert.alert('Modal has been closed.');
-          setIsOpen(!isOpen);
+          dispatch(toggleModal(!isOpen))
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Pressable
-              onPress={() => setIsOpen(!isOpen)}
+              onPress={() => dispatch(toggleModal(!isOpen))}
               style={{
                 alignSelf: 'flex-end', // Align the Pressable component to the right
               }}>

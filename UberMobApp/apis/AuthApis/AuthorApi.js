@@ -28,7 +28,7 @@ export const AuthApi  = {
         try {
       const response =  await api.request({
             url: `/auth/signin`,
-            method: "POST",
+            method: "POST", 
             data:userData,
             signal,
           });

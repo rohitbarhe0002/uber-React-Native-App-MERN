@@ -2,7 +2,6 @@ import User from "../../Schema/user/user.js";
 
 ///Add new hotel
 export const createUser = async (req, res, next) => {
-  console.log(req.body,"body is here")
   const newUser = new User(req.body);
   try {
     const  saveUser = await newUser.save();

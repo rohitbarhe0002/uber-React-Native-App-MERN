@@ -11,8 +11,12 @@ import React,{useState} from 'react'
 import styles from './style'
 import PrimaryButton from '../../components/PrimaryButton';
 import { AuthApi } from '../../apis/AuthApis/AuthorApi';
-
-const SignUp = () => {
+import { userSignUp } from '../../redux/slices/userAuthSlice';
+import { useDispatch , useSelector} from 'react-redux';
+import { onSuccess, toggleSuccessModal } from '../../redux/slices/usersOrdersSlice';
+const SignUp = ({navigation}) => {
+  const { isSuccess} = useSelector(state => state.userOrdersSlice);
+  const dispatch = useDispatch();
   const [userData,setUserData] = useState({
    username:'',
     email:'',
@@ -24,16 +28,14 @@ const SignUp = () => {
   })
 
   const handleSignUp = () => {
-    if(userData.password === userData.confirmPassword) {
-const { confirmPassword, ...restUserData } = userData;
-       AuthApi.SignUp(restUserData).then((res)=>{
-       }).catch((errorInfo) => {
-            console.log(errorInfo,">>>error");
-        });
-    }else {
-      console.log("password is not matched")
+     if(userData.password === userData.confirmPassword) {
+     const { confirmPassword, ...restUserData } = userData;
+     const res = dispatch(userSignUp(restUserData))
+     dispatch(onSuccess(res))
+     dispatch(toggleSuccessModal(!isSuccess))
+     if(!isSuccess)  {navigation.navigate('SignIn')}
+      } 
     }
-      }
 
   return (
     <KeyboardAwareScrollView
