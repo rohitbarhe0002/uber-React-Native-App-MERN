@@ -44,9 +44,6 @@ function Order() {
     return <ActivityIndicator size="large" style={{alignItems:'center',justifyContent:'center',flex:1}} />;
   }
 
-  // if (error) {
-  //   return <Text>Error: {error}</Text>;
-  // }
 
   const makeYourOrder = userData => {
     if (!customerOrderId) {
@@ -70,8 +67,6 @@ function Order() {
         newData[pos] = updatedItem;
         setUserOrder(newData);
         setOrderModal(!orderModal);
-        // setIsModalOpen(!isModalOpen)
-        // form.resetFields();
       }
     }
   };

@@ -1,6 +1,6 @@
 import orders from "../../Schema/orders/orders.js";
 import Orders from "../../Schema/orders/orders.js";
-import jwt from 'jsonwebtoken'
+
 ///Add new menu item
 export const createOrder = async (req, res, next) => {
   const newOrder = new Orders(req.body);
@@ -43,10 +43,10 @@ export const deleteOrder = async (req, res, next) => {
 //update order
 export const updateOrders = async (req, res, next) => {
   const filter = { id: req.params.id };
-  const update = req.body;
+  const updatedOrderData = req.body;
   
   try {
-    const updatedOrders = await Orders.findOneAndUpdate(filter,update, {
+    const updatedOrders = await Orders.findOneAndUpdate(filter,updatedOrderData, {
       returnOriginal: false,
       projection: { _id: 0},
    });
