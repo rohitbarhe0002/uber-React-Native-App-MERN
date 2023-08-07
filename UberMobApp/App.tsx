@@ -7,7 +7,7 @@ import {ActivityIndicator} from 'react-native';
 import SignIn from './screens/Signin/index';
 import SignUp from './screens/SignUp/index';
 import BottomTabs from './components/BottomTabs';
-
+import InfiniteScrollExample from './screens/InfiniteScroll';
 function App(): JSX.Element {
   const Stack = createStackNavigator();
 
@@ -16,11 +16,11 @@ function App(): JSX.Element {
       <NavigationContainer  
         fallback={<ActivityIndicator color="blue" size="large" />}>
         <Stack.Navigator
-          initialRouteName="SignUp"
+          initialRouteName="SignIn"
           screenOptions={{gestureEnabled: false, animationEnabled: false}}>
           <Stack.Screen
-            name="SignUp"
-            component={SignUp}
+            name="InfiniteScrollExample"
+            component={InfiniteScrollExample}
             options={{headerShown: false}}
           />
           <Stack.Screen

@@ -21,9 +21,9 @@ const SignIn = ({navigation}) => {
     if(!error && !openErrorModal) {
       navigation.navigate('BottomTabs')
       setUserDetails({username:'',password:''})
-    }
-      
+    }    
   }
+  
   return (
     <KeyboardAwareScrollView
     enableOnAndroid={true}

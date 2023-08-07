@@ -1,6 +1,6 @@
 import orders from "../../Schema/orders/orders.js";
 import Orders from "../../Schema/orders/orders.js";
-import jwt from 'jsonwebtoken'
+
 ///Add new menu item
 export const createOrder = async (req, res, next) => {
   const newOrder = new Orders(req.body);
@@ -14,7 +14,6 @@ export const createOrder = async (req, res, next) => {
 
 // get all orders
 export const  getAllOrders  = async (req, res, next) => {
-
   try {
     const order = await orders.find({}, { _id: 0 }).lean()
     res.status(200).json(order); 
@@ -41,18 +40,50 @@ export const deleteOrder = async (req, res, next) => {
 };
 
 //update order
+// export const updateOrders = async (req, res, next) => {
+//   const filter = { id: req.params.id };
+
+//   const updatedOrderData = req.body;
+//   console.log(updatedOrderData,"updatedOrderData body from FE")
+
+//   try {
+//     const updatedOrders = await Orders.findOneAndUpdate(filter,updatedOrderData, {
+//       returnOriginal: false,
+//       projection: { _id: 0},
+//    });
+//     res.status(200).json(updatedOrders);
+//   } catch (err) {
+//     console.log(err);
+//     next(err);
+//   }
+// };
+
+
 export const updateOrders = async (req, res, next) => {
-  const filter = { id: req.params.id };
+  const filter = { orderID: req.params.id };
   const update = req.body;
   
   try {
-    const updatedOrders = await Orders.findOneAndUpdate(filter,update, {
+    const updatedRestaurant = await Orders.findOneAndUpdate(filter,update, {
       returnOriginal: false,
-      projection: { _id: 0},
+      projection: { _id: 0 },
    });
-    res.status(200).json(updatedOrders);
+    res.status(200).json(updatedRestaurant);
   } catch (err) {
     console.log(err);
     next(err);
+  }
+};
+
+
+
+///get orders withPagination 
+export const getOrderByPageLimit = async (req, res, next) => {
+  const { page,limit} = req.query;
+  try {
+    const orders = await Orders.find().skip((page - 1) * limit).limit(limit);
+    res.status(200).json(orders);
+  } catch (err) {
+    next(err)
   }
 };
