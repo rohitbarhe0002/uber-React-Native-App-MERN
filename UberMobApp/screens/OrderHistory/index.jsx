@@ -2,11 +2,9 @@ import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
-  Button,
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
-import orders from '../../assets/data/dashboard/orders.json';
 import {DataTable} from 'react-native-paper';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {StyleSheet} from 'react-native';
@@ -18,26 +16,22 @@ import {createOrder, fetchAllOrder, removeOrder} from '../../redux/slices/usersO
 import { toggleModal } from '../../redux/slices/modalSlice';
 import ErrorModal from '../../shared/errorModal';
 import SuccessModal from '../../shared/successModal';
-function Order() {
+import { OrdersApi } from '../../apis/orderApis/orderApi';
+
+function Order({navigation}) {
   const dispatch = useDispatch();
   const {userOrders, loading, openErrorModal,error,isSuccess,successMsg} = useSelector(state => state.usersOrderSlice);
   const {isOpen} = useSelector(state => state.orderModalSlice);
-  const [userOrder, setUserOrder] = useState([]);
-  const [orderModal, setOrderModal] = useState(false);
   const [customerOrderId, setCustomerOrderId] = useState(null);
 
   useEffect(() => {
     dispatch(fetchAllOrder());
   }, [dispatch]);
 
-  const removeOrderdItems = orderId => {
-    dispatch(removeOrder(orderId));
-  };
 
   const handleItemEdit = itemId => {
-    // setOrderModal(!orderModal);
     setCustomerOrderId(itemId);
-    // setOrderModal(!orderModal);
+    dispatch(toggleModal(!isOpen))
   };
 
   if (loading) {
@@ -48,26 +42,14 @@ function Order() {
   const makeYourOrder = userData => {
     if (!customerOrderId) {
      dispatch(createOrder(userData))
-     setOrderModal(!orderModal)
+     dispatch(toggleModal(!isOpen))
     } else {
-      let pos =
-        userOrder &&
-        userOrder.findIndex(
-          (orderItm, i) => orderItm.orderID === customerOrderId,
-        );
-      if (pos !== -1) {
-        // Existing user found in the list
-        let updatedItem = {
-          ...userOrder[pos],
-          deliveryAddress: userData.deliveryAddress,
-          price: userData.price,
-          status: userData.status,
-        };
-        let newData = [...userOrder];
-        newData[pos] = updatedItem;
-        setUserOrder(newData);
-        setOrderModal(!orderModal);
-      }
+      OrdersApi.updateOrder(customerOrderId,userData).then((res)=> {
+      OrdersApi.getAllOrder().then((res)=> dispatch(fetchAllOrder()))
+        dispatch(toggleModal(!isOpen))
+        setCustomerOrderId('')
+        navigation.navigate('menu')
+      })
     }
   };
 
@@ -83,10 +65,6 @@ function Order() {
       return <Text style={{color: 'red'}}>{status}</Text>;
     }
   };
-
- const handleEdit = () => {
-  console.log("")
- }
 
 
   const renderMenuItemButton = () => (
@@ -215,8 +193,8 @@ function Order() {
 
       <ModalView
         handleOnSubmit={makeYourOrder}
-        handleOnEdit={handleEdit}
         itemId={customerOrderId}
+        setItemId={setCustomerOrderId}
       />
       <ErrorModal errorMsg={error} isError={openErrorModal}/>
       <SuccessModal isSuccess={isSuccess} successMsg={successMsg}/>

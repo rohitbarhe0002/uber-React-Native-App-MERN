@@ -21,14 +21,13 @@ import { toggleModal } from '../../redux/slices/modalSlice';
 import {useDispatch} from 'react-redux';
 import {useSelector} from 'react-redux';
 
-const ModalView = ({itemId, handleOnSubmit}) => {
+const ModalView = ({itemId, handleOnSubmit,setItemId}) => {
   const {isOpen} = useSelector(state => state.orderModalSlice);
   const formikRef = React.useRef(null);
   const [checked, setChecked] = React.useState('Accepted');
   const dispatch  = useDispatch()
 
   useEffect(() => {
-    let filterdData;
     if (isOpen && itemId) {
       OrdersApi.getById(itemId).then(order => {
         formikRef.current.setValues({
@@ -37,14 +36,19 @@ const ModalView = ({itemId, handleOnSubmit}) => {
         });
         setChecked(order?.status);
       });
-
-      return () => {
-        formikRef?.current?.resetForm(); // Reset the Formik form to initial values
-        setChecked('Accepted'); // Reset the radio button to default value
-      };
-    
     }
   }, [isOpen]);
+
+ 
+
+  const handleClose = () => {
+  dispatch(toggleModal(!isOpen))
+  setItemId('')
+  setChecked('Accepted');
+  }
+
+
+const generateOrderId = () =>  Math.floor(Math.random() * 1000);
 
   return (
     <View style={styles.centeredView}>
@@ -59,7 +63,7 @@ const ModalView = ({itemId, handleOnSubmit}) => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Pressable
-              onPress={() => dispatch(toggleModal(!isOpen))}
+              onPress={() => handleClose()}
               style={{
                 alignSelf: 'flex-end', // Align the Pressable component to the right
               }}>
@@ -80,39 +84,26 @@ const ModalView = ({itemId, handleOnSubmit}) => {
               </Text>
             </Pressable>
             <Formik
-              initialValues={{name: '', deliveryAddress: '', price: ''}}
+            
+              initialValues={{ deliveryAddress: '', price: '',status:''}}
               innerRef={formikRef}
               onSubmit={values => {
-                let userInfo = {
-                  orderID: Math.random(99999999) + 1,
-                  deliveryAddress: values.deliveryAddress,
-                  price: values.price,
+                const orderID = generateOrderId();
+                const orderData = {
+                  ...values,
                   status: checked,
                 };
-                handleOnSubmit(userInfo);
+                const orderFormData = {
+                  ...values,
+                  orderID,
+                  status: checked,
+                };
+               handleOnSubmit(itemId ? orderData : orderFormData);
+             
               }}>
               {({handleChange, handleBlur, handleSubmit, values}) => (
                 <View style={{width: '100%'}}>
-                  <Text
-                    style={{
-                      marginBottom: 5,
-                      marginLeft: 5,
-                      color: '#000',
-                      fontSize: 14,
-                    }}>
-                    Name
-                  </Text>
-                  <TextInput
-                    onChangeText={handleChange('name')}
-                    onBlur={handleBlur('name')}
-                    value={values.name}
-                    style={{
-                      borderColor: '#ccc',
-                      borderWidth: 1,
-                      marginBottom: 15,
-                      borderRadius: 15,
-                    }}
-                  />
+                
                   <Text
                     style={{
                       marginBottom: 5,
@@ -155,32 +146,30 @@ const ModalView = ({itemId, handleOnSubmit}) => {
                     }}
                     label="price"
                   />
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-around',
-                      alignItems: 'center',
-                    }}>
-                    <RadioButton
-                      value="first"
-                      status={checked === 'Accepted' ? 'checked' : 'unchecked'}
-                      onPress={() => setChecked('Accepted')}
-                    />
-                    <Text style={{width: 40}}>Accepted</Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+        <RadioButton
+          value="Accepted"
+          status={checked === 'Accepted' ? 'checked' : 'unchecked'}
+          onPress={() => setChecked('Accepted')}
+        />
+        <Text style={{ width: 40 }}>Accepted</Text>
 
-                    <RadioButton
-                      value="second"
-                      status={checked === 'Pending' ? 'checked' : 'unchecked'}
-                      onPress={() => setChecked('Pending')}
-                    />
-                    <Text style={{width: 40}}>Pending</Text>
-                    <RadioButton
-                      value="second"
-                      status={checked === 'Declined' ? 'checked' : 'unchecked'}
-                      onPress={() => setChecked('Declined')}
-                    />
-                    <Text style={{width: 40}}>Declined</Text>
-                  </View>
+        <RadioButton
+          value="Pending"
+          status={checked === 'Pending' ? 'checked' : 'unchecked'}
+          onPress={() => setChecked('Pending')}
+        />
+        <Text style={{ width: 40 }}>Pending</Text>
+
+        <RadioButton
+          value="Declined"
+          status={checked === 'Declined' ? 'checked' : 'unchecked'}
+          onPress={() => setChecked('Declined')}
+        />
+        <Text style={{ width: 40 }}>Declined</Text>
+      </View>
+
+
 
                   <View
                     style={{

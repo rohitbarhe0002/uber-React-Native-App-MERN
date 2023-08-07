@@ -128,14 +128,14 @@ export const OrdersApi = {
     }
   },
 
-  updateOrder: async function (id, cancel = false) {
+  updateOrder: async function (id,userData,cancel = false) {
     const abortController = new AbortController();
     const signal = cancel ? abortController.signal : undefined;
-
     try {
       const response = await api.request({
         url: `orders/${id}`,
-        method: "GET",
+        method: "PUT",
+        data:userData,
         signal,
       });
       return response.data;
@@ -150,6 +150,7 @@ export const OrdersApi = {
       }
     }
   },
+
 //   getAll: async function (cancel = false) {
 //     const abortController = new AbortController();
 //     const signal = cancel ? abortController.signal : undefined;
@@ -192,14 +193,6 @@ export const OrdersApi = {
 //     } catch (error) {
 //       if (error.name === 'AbortError') {
 //         // Request was aborted
-//         return [];
-//       }
-//       throw error;
-//     } finally {
-//       if (cancel) {
-//         abortController.abort();
-//       }
-//     }
-//   },
+//   53
   
 };

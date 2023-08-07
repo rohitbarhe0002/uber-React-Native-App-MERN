@@ -39,6 +39,20 @@ export const removeOrder = createAsyncThunk(
   },
 );
 
+export const updateOrder = createAsyncThunk(
+  'userOrders/updateOrder',
+  async (orderId,userUpdateItem) => {
+    try {
+      await OrdersApi.updateOrder(orderId,userUpdateItem);
+      
+      const updatedOrders = await OrdersApi.getAllOrder();
+      return updatedOrders;
+    } catch (error) {
+      throw Error(error);
+    }
+  },
+);
+
 
 const handleOrderCase = (state, action) => {
   state.loading = false;
@@ -113,6 +127,15 @@ const userOrders = createSlice({
         handleOrderCase(state, action);
       })
       .addCase(createOrder.rejected, (state, action) => {
+        handleOrderCase(state, action);
+      })
+      .addCase(updateOrder.pending, state => {
+        state.loading = true;
+      })
+      .addCase(updateOrder.fulfilled, (state, action) => {
+        handleOrderCase(state, action);
+      })
+      .addCase(updateOrder.rejected, (state, action) => {
         handleOrderCase(state, action);
       });
   },

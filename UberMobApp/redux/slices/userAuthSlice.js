@@ -71,9 +71,9 @@ const userAuth = createSlice({
 
   },
 
+  
   extraReducers: builder => {
     builder
-
       .addCase(userSignUp.fulfilled, handleOrderCase)
       .addCase(userSignUp.rejected, handleOrderCase)
       .addCase(userSignUp.pending, state => {
@@ -84,9 +84,7 @@ const userAuth = createSlice({
       .addCase(userSignIn.pending, state => {
         state.loading = true;
       })
-
   },
-
 });
 
 export const { toggleErrorModal, toggleSuccessModal, onSuccess, onLogOut } = userAuth.actions;

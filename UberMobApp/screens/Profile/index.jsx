@@ -23,7 +23,7 @@ useEffect(() => {
 
 const handleSignOut= () => {
   AsyncStorage.removeItem('userToken')
-navigation.navigate('SignIn')
+  navigation.navigate('SignIn')
 }
   return (
     <View style={styles.container}>
