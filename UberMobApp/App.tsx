@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {StyleSheet} from 'react-native';
-
 import {createStackNavigator} from '@react-navigation/stack';
 import {NavigationContainer} from '@react-navigation/native';
 import {ActivityIndicator} from 'react-native';
@@ -8,8 +7,10 @@ import SignIn from './screens/Signin/index';
 import SignUp from './screens/SignUp/index';
 import BottomTabs from './components/BottomTabs';
 import InfiniteScrollExample from './screens/InfiniteScroll';
+import AsyncStorage from '@react-native-community/async-storage';
 function App(): JSX.Element {
   const Stack = createStackNavigator();
+
 
   return (
     <>

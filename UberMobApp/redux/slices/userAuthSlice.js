@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { AuthApi } from '../../apis/AuthApis/AuthorApi';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const userSignUp = createAsyncThunk(
   'userAuth/signUp',
@@ -19,6 +18,7 @@ export const userSignIn = createAsyncThunk(
   async userData => {
     try {
       const userLoginData = await AuthApi.SignIn(userData);
+
       return userLoginData;
     } catch (error) {
       throw Error(error);
@@ -28,15 +28,12 @@ export const userSignIn = createAsyncThunk(
 
 const handleOrderCase = (state, action) => {
   state.loading = false;
-  // Clear existing error message and modal status
   state.error = action.error ? action.error.message : null;
-  state.openErrorModal = action.error ? true : false; // Set to true if there's an error, false otherwise
-
+  state.openErrorModal = action.error ? true : false;
   if (action.type === userSignUp.fulfilled.type) {
-    // Save user details upon successful sign-up
+ 
   }
   if (action.type === userSignIn.fulfilled.type) {
-   AsyncStorage.setItem('userToken',action?.payload?.token)
     state.userCredential = action.payload;
     state.userToken = action?.payload?.token;
   }
@@ -46,7 +43,7 @@ const userAuth = createSlice({
   name: 'userAuth',
   initialState: {
     userCredential: '',
-    userToken: '', // Load user token from local storage if available
+    userToken: '',
     loading: false,
     error: null,
     openErrorModal: false,
@@ -66,7 +63,7 @@ const userAuth = createSlice({
     },
     onLogOut: (state) => {
       state.userToken = '';
-      localStorage.removeItem('userToken'); // Remove user token from local storage on log out
+      localStorage.removeItem('userToken'); 
     }
 
   },

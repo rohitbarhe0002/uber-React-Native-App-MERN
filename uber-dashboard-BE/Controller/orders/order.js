@@ -15,6 +15,7 @@ export const createOrder = async (req, res, next) => {
 // get all orders
 export const  getAllOrders  = async (req, res, next) => {
   try {
+    console.log("orsers come in")
     const order = await orders.find({}, { _id: 0 }).lean()
     res.status(200).json(order); 
   } catch (err) {

@@ -19,7 +19,9 @@ const SignIn = ({navigation}) => {
   const handleLogin = async () => {
     dispatch(userSignIn(userDetails))
     if(!error && !openErrorModal) {
+      
       navigation.navigate('BottomTabs')
+
       setUserDetails({username:'',password:''})
     }    
   }

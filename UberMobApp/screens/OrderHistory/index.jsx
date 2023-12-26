@@ -23,7 +23,7 @@ function Order({navigation}) {
   const {userOrders, loading, openErrorModal,error,isSuccess,successMsg} = useSelector(state => state.usersOrderSlice);
   const {isOpen} = useSelector(state => state.orderModalSlice);
   const [customerOrderId, setCustomerOrderId] = useState(null);
-
+console.log(userOrders,">>")
   useEffect(() => {
     dispatch(fetchAllOrder());
   }, [dispatch]);

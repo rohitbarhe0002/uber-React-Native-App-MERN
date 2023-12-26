@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ImageBackground,Image, TextInput, Pressable } f
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import { useSelector } from 'react-redux';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const Profile = ({navigation}) => {
   const [userInfo,setUserInfo] = useState({username:'',address:'',city:''})
 const [isEditable,setIsEditable] = useState(false)
@@ -11,6 +11,7 @@ const {userCredential, loading, openErrorModal,error} = useSelector(state => sta
 
 
 useEffect(() => {
+  console.log(userCredential,"usercred")
   if (userCredential) {
     setUserInfo((prevUserInfo) => ({
       ...prevUserInfo,
@@ -22,7 +23,6 @@ useEffect(() => {
 }, []);
 
 const handleSignOut= () => {
-  AsyncStorage.removeItem('userToken')
   navigation.navigate('SignIn')
 }
   return (

@@ -7,7 +7,7 @@ dotenv.config()
 
 /// register user
 export const signUp = async (req, res, next) => {
-  const { username,email ,  address,password,userType,city,phoneNumber } = req.body;
+  const { username,email,address,password,userType,city,phoneNumber } = req.body;
   try {
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(password, salt);
@@ -29,7 +29,9 @@ export const signUp = async (req, res, next) => {
 
 /// login user 
 export const signIn = async (req, res, next) => {
+
   try {
+    console.log("hited")
     const user = await User.findOne({ username: req.body.username });
     const isPasswordChecked = await bcrypt.compare(
       req.body.password,
@@ -47,7 +49,7 @@ export const signIn = async (req, res, next) => {
     // Set the cookie and send the response in one go
     res.cookie("access_token", token, {
       httpOnly: true,
-      expiresIn: "10h"
+      expiresIn: "20h"
     }).status(200).json({ ...otherdetails, token });
   } catch (err) {
     res.status(500).json(err);

@@ -6,7 +6,7 @@ const InfiniteScrollExample = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(1);
 
-  const fetchData = async (pageNumber) => {
+  const fetchData = async (pageNumber:any) => {
     try {
       const response = await fetch(
         `https://jsonplaceholder.typicode.com/todos?_page=${pageNumber}&_limit=10`

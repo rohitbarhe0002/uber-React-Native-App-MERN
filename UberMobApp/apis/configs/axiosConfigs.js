@@ -1,19 +1,21 @@
+import  getUserToken  from '../../utils';
+import axios from 'axios';
 
-import axios from "axios";
 export const api = axios.create({
-  baseURL: 'http://192.168.43.94:8000/api',
-  headers: {'Authorization': 'Bearer '+ 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0OWRiNjIzN2Q5ZTY5ZmQwNThhNWY2NiIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2ODg1NTkwNTd9.W_BZoV6dV6dRwbxXpi4v8wREF_5CAa8Mp9DnliWRLcM'},
- },
+  baseURL: 'http://192.168.98.50:8000/api',
+});
 
-);
-
-const errorHandler = (error) => {
+const errorHandler = async (error) => {
   const statusCode = error.response?.status;
-  
-  if (statusCode ) {
-  
+  if (statusCode) {
     const errorMessage = error.response?.data?.message || "An error occurred";
-  
+    if (statusCode === 401) {
+      const userToken = await getUserToken();
+      if (userToken) {
+        api.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
+        return api(error.config);
+      }
+    }
   }
 
   return Promise.reject(error);
@@ -23,5 +25,3 @@ api.interceptors.response.use(
   undefined,
   error => errorHandler(error)
 );
-
-

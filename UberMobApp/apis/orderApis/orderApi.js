@@ -56,6 +56,7 @@ export const OrdersApi = {
           });
          return response.data;
         } catch (error) {
+          console.log("error order",error)
           if (cancel && error.name !== 'AbortError') {
             abortController.abort();
           }

@@ -1,4 +1,5 @@
 import { api } from "../configs/axiosConfigs";
+import AsyncStorage from '@react-native-community/async-storage';
 
 export const AuthApi  = {
 
@@ -32,6 +33,7 @@ export const AuthApi  = {
             data:userData,
             signal,
           });
+          await AsyncStorage.setItem('@userToken_Key', response?.data?.token);
          return response.data;
         } catch (error) {
           if (cancel && error.name !== 'AbortError') {
